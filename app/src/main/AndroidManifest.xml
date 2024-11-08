@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Spotistats"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.spotify.api.KEY"
+            android:value="${SPOTIFY_API_KEY}" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

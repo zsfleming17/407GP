@@ -1,20 +1,60 @@
 package com.cs407.spotistats
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.spotify.sdk.android.auth.AuthorizationClient
+import com.spotify.sdk.android.auth.AuthorizationRequest
+import com.spotify.sdk.android.auth.AuthorizationResponse
+import com.cs407.spotistats.BuildConfig
+
 
 class MainActivity : AppCompatActivity() {
+    private val CLIENT_ID = BuildConfig.SPOTIFY_CLIENT_ID
+    private val REDIRECT_URI = "http://localhost:8888/callback"
+    private val REQUEST_CODE = 1337
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        startSpotifyAuthentication()
+    }
+
+    private fun startSpotifyAuthentication() {
+        val builder = AuthorizationRequest.Builder(
+            CLIENT_ID,
+            AuthorizationResponse.Type.TOKEN,
+            REDIRECT_URI
+        )
+            .setScopes(arrayOf("streaming"))
+        val request = builder.build()
+
+        AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE) {
+            val response = AuthorizationClient.getResponse(resultCode, data)
+            when (response.type) {
+                AuthorizationResponse.Type.TOKEN -> {
+                    val accessToken = response.accessToken
+                    println("Access Token: $accessToken")
+                }
+
+                AuthorizationResponse.Type.ERROR -> {
+                    val error = response.error
+                    println("Error during Spotify Authentication: $error")
+                }
+
+                AuthorizationResponse.Type.EMPTY -> {
+                    println("Authentication was canceled")
+                }
+                else -> {
+                    println("Unexpected response type: ${response.type}")
+                }
+            }
         }
     }
 }
