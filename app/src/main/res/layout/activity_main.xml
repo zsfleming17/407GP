@@ -5,15 +5,45 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#191414"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
+    <Button
+        android:id="@+id/button"
+        android:layout_width="227dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="83dp"
+        android:layout_marginBottom="104dp"
+        android:backgroundTint="#1db954"
+        android:fontFamily="sans-serif-medium"
+        android:text="Log Into Spotify"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="111dp"
+        android:layout_marginTop="87dp"
+        android:layout_marginEnd="19dp"
+        android:fontFamily="@font/lalezar"
+        android:text="Spotistats"
+        android:textAlignment="center"
+        android:textColor="#1db954"
+        android:textSize="87sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="169dp"
+        android:layout_height="177dp"
+        android:layout_marginStart="121dp"
+        android:layout_marginTop="35dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        tools:srcCompat="@tools:sample/avatars" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
