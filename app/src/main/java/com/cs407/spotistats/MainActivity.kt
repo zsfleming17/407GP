@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
 import com.spotify.sdk.android.auth.AuthorizationResponse
-import com.cs407.spotistats.BuildConfig
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             AuthorizationResponse.Type.TOKEN,
             REDIRECT_URI
         )
-            .setScopes(arrayOf("streaming"))
+            .setScopes(arrayOf("streaming", "user-library-read", "user-top-read"))
         val request = builder.build()
 
         AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request)
