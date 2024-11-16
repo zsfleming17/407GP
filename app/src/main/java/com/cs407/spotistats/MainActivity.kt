@@ -2,6 +2,8 @@ package com.cs407.spotistats
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.spotify.sdk.android.auth.AuthorizationClient
 import com.spotify.sdk.android.auth.AuthorizationRequest
@@ -10,14 +12,17 @@ import com.spotify.sdk.android.auth.AuthorizationResponse
 
 class MainActivity : AppCompatActivity() {
     private val CLIENT_ID = BuildConfig.SPOTIFY_CLIENT_ID
-    private val REDIRECT_URI = "http://localhost:8888/callback"
+    private val REDIRECT_URI = "spotistats://callback"
     private val REQUEST_CODE = 1337
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        startSpotifyAuthentication()
-    }
+        val loginButton = findViewById<Button>(R.id.button)
+        loginButton.setOnClickListener {
+            startSpotifyAuthentication()
+        }
+}
 
     private fun startSpotifyAuthentication() {
         val builder = AuthorizationRequest.Builder(
@@ -33,27 +38,30 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (requestCode == REQUEST_CODE) {
             val response = AuthorizationClient.getResponse(resultCode, data)
+            Log.d("MainActivity", "Received response type: ${response.type}")
             when (response.type) {
                 AuthorizationResponse.Type.TOKEN -> {
                     val accessToken = response.accessToken
-                    println("Access Token: $accessToken")
+                    Log.d("MainActivity", "Access Token: $accessToken")
                 }
 
                 AuthorizationResponse.Type.ERROR -> {
                     val error = response.error
-                    println("Error during Spotify Authentication: $error")
+                    Log.e("MainActivity", "Error during Spotify Authentication: $error")
                 }
 
                 AuthorizationResponse.Type.EMPTY -> {
-                    println("Authentication was canceled")
+                    Log.d("MainActivity", "Authentication was canceled")
                 }
+
                 else -> {
-                    println("Unexpected response type: ${response.type}")
+                    Log.w("MainActivity", "Unexpected response type: ${response.type}")
                 }
             }
+        } else {
+            Log.d("MainActivity", "Request code does not match: $requestCode")
         }
     }
 }
