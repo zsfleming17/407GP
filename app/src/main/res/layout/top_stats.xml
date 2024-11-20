@@ -62,7 +62,6 @@
         android:text="@string/top_songs"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintMarginStart="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toggleGroup" />
 
@@ -96,7 +95,6 @@
         android:text="@string/top_genres"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintMarginStart="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/songsCard" />
 
@@ -131,7 +129,6 @@
         android:text="@string/top_artists"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintMarginStart="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/genresCard" />
 
