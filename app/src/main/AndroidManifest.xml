@@ -34,5 +34,7 @@
                     android:host="callback" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".TopStatsActivity" />
     </application>
 </manifest>

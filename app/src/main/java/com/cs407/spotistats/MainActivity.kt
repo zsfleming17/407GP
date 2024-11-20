@@ -44,9 +44,16 @@ class MainActivity : AppCompatActivity() {
             when (response.type) {
                 AuthorizationResponse.Type.TOKEN -> {
                     val accessToken = response.accessToken
-                    Log.d("MainActivity", "Access Token: $accessToken")
+                    if (!accessToken.isNullOrEmpty()) {
+                        Log.d("MainActivity", "Access Token: $accessToken")
+                        val intent = Intent(this, TopStatsActivity::class.java)
+                        intent.putExtra("ACCESS_TOKEN", accessToken)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Log.e("MainActivity", "Access token is null or empty!")
+                    }
                 }
-
                 AuthorizationResponse.Type.ERROR -> {
                     val error = response.error
                     Log.e("MainActivity", "Error during Spotify Authentication: $error")
