@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             startSpotifyAuthentication()
         }
-}
+    }
 
     private fun startSpotifyAuthentication() {
         val builder = AuthorizationRequest.Builder(
