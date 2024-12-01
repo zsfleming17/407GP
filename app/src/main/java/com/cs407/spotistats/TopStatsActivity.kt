@@ -1,7 +1,9 @@
 package com.cs407.spotistats
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.cs407.spotistats.models.Artist
@@ -22,7 +24,19 @@ class TopStatsActivity : AppCompatActivity() {
         val accessToken = intent.getStringExtra("ACCESS_TOKEN")
         if (accessToken != null) {
             setupTimeRangeToggle()
-        } else {
+
+            val fullStatsButton = findViewById<Button>(R.id.logoutButton) // Reference the button by its ID
+            fullStatsButton.setOnClickListener {
+                val intent = Intent(this, FullStatsActivity::class.java) // Create an intent
+                intent.putExtra(
+                    "ACCESS_TOKEN",
+                    accessToken
+                ) // Optional: Pass access token to FullStatsActivity
+                startActivity(intent)
+            }
+
+
+            } else {
             Log.e("TopStatsActivity", "Access token is missing!")
         }
     }

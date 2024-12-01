@@ -33,5 +33,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".TopStatsActivity" />
+        <activity android:name=".FullStatsActivity" />
     </application>
 </manifest>
