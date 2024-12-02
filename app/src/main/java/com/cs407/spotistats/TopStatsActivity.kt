@@ -25,13 +25,13 @@ class TopStatsActivity : AppCompatActivity() {
         if (accessToken != null) {
             setupTimeRangeToggle()
 
-            val fullStatsButton = findViewById<Button>(R.id.logoutButton) // Reference the button by its ID
+            val fullStatsButton = findViewById<Button>(R.id.logoutButton)
             fullStatsButton.setOnClickListener {
-                val intent = Intent(this, FullStatsActivity::class.java) // Create an intent
+                val intent = Intent(this, FullStatsActivity::class.java)
                 intent.putExtra(
                     "ACCESS_TOKEN",
                     accessToken
-                ) // Optional: Pass access token to FullStatsActivity
+                )
                 startActivity(intent)
             }
 
