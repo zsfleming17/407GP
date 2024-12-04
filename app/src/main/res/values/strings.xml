@@ -4,8 +4,9 @@
     <string name="month">Month</string>
     <string name="six_months">6 months</string>
     <string name="year">Year</string>
-    <string name="top_songs">Top Songs:</string>
-    <string name="top_genres">Top Genres:</string>
-    <string name="top_artists">Top Artists:</string>
+    <string name="top_songs">Top Songs</string>
+    <string name="top_genres">Top Genres</string>
+    <string name="top_artists">Top Artists</string>
     <string name="full_stats">View Full Stats</string>
+    <string name="login">Log Into Spotify</string>
 </resources>

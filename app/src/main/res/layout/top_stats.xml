@@ -3,28 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient">
+
 
     <!-- Add a TextView with the text "Your Top Stats" -->
+
+    <!-- Add a RadioGroup with the three viewing options -->
+
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
+        android:layout_width="329dp"
+        android:layout_height="123dp"
+        android:layout_marginTop="27dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="sans-serif-medium"
         android:text="@string/your_top_stats"
-        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:textSize="48sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/toggleGroup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Add a RadioGroup with the three viewing options -->
     <RadioGroup
         android:id="@+id/toggleGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:background="#1db954"
         android:orientation="horizontal"
+        app:cardCornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textView">
@@ -33,21 +43,27 @@
             android:id="@+id/radio_month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/month" />
+            android:backgroundTint="#1db954"
+            android:buttonTint="@color/white"
+            android:text="@string/month"
+            android:textStyle="bold"
+            app:cardCornerRadius="8dp" />
 
         <RadioButton
             android:id="@+id/radio_6months"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@string/six_months" />
+            android:text="@string/six_months"
+            android:textStyle="bold" />
 
         <RadioButton
             android:id="@+id/radio_year"
-            android:layout_width="wrap_content"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@string/year" />
+            android:text="@string/year"
+            android:textStyle="bold" />
     </RadioGroup>
 
     <!-- Top Songs Label -->
@@ -60,6 +76,7 @@
         android:layout_marginStart="164dp"
         android:layout_marginTop="20dp"
         android:text="@string/top_songs"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,6 +98,8 @@
             android:id="@+id/songsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#1db954"
+            android:backgroundTint="#1db954"
             android:orientation="vertical"
             android:padding="16dp" />
     </androidx.cardview.widget.CardView>
@@ -93,6 +112,7 @@
         android:layout_marginStart="160dp"
         android:layout_marginTop="24dp"
         android:text="@string/top_genres"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -115,6 +135,7 @@
             android:id="@+id/genresContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#1db954"
             android:orientation="vertical"
             android:padding="16dp" />
     </androidx.cardview.widget.CardView>
@@ -127,6 +148,7 @@
         android:layout_marginStart="160dp"
         android:layout_marginTop="24dp"
         android:text="@string/top_artists"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -149,6 +171,7 @@
             android:id="@+id/artistsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#1db954"
             android:orientation="vertical"
             android:padding="16dp" />
     </androidx.cardview.widget.CardView>
@@ -159,7 +182,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="132dp"
+        android:backgroundTint="#1db954"
         android:text="@string/full_stats"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/artistsCard" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,10 @@
         <meta-data
             android:name="com.spotify.api.KEY"
             android:value="${SPOTIFY_API_KEY}" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
