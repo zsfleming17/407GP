@@ -13,19 +13,20 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="329dp"
-        android:layout_height="123dp"
-        android:layout_marginTop="27dp"
-        android:layout_marginBottom="20dp"
+        android:layout_width="408dp"
+        android:layout_height="131dp"
+        android:layout_marginBottom="12dp"
         android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:background="@drawable/top_stats_text_background"
         android:text="@string/your_top_stats"
         android:textColor="@color/white"
         android:textSize="48sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/toggleGroup"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <RadioGroup
         android:id="@+id/toggleGroup"

@@ -1,0 +1,29 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base background with rounded corners -->
+    <item>
+        <shape>
+            <corners
+                android:bottomLeftRadius="100dp"
+                android:bottomRightRadius="100dp"
+                android:topLeftRadius="0dp"
+                android:topRightRadius="0dp" />
+            <solid android:color="#FF6200EE" />
+        </shape>
+    </item>
+
+    <!-- Gradient overlay -->
+    <item>
+        <shape>
+            <corners
+                android:bottomLeftRadius="100dp"
+                android:bottomRightRadius="100dp"
+                android:topLeftRadius="0dp"
+                android:topRightRadius="0dp" />
+            <gradient
+                android:startColor="#1db954"
+                android:centerColor="#02f559"
+                android:endColor="#1db954"
+                android:angle="0" />
+        </shape>
+    </item>
+</layer-list>
