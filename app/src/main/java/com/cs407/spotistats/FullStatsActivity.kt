@@ -1,10 +1,7 @@
 package com.cs407.spotistats
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.cs407.spotistats.models.Artist
 import com.cs407.spotistats.models.TopArtistsResponse
@@ -15,86 +12,62 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class TopStatsActivity : AppCompatActivity() {
+class FullStatsActivity : AppCompatActivity() {
     private var timeRange = "short_term"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.top_stats)
+        setContentView(R.layout.full_stats)
 
         val accessToken = intent.getStringExtra("ACCESS_TOKEN")
         if (accessToken != null) {
-            setupTimeRangeToggle()
-
-            val fullStatsButton = findViewById<Button>(R.id.logoutButton)
-            fullStatsButton.setOnClickListener {
-                val intent = Intent(this, FullStatsActivity::class.java)
-                intent.putExtra(
-                    "ACCESS_TOKEN",
-                    accessToken
-                )
-                startActivity(intent)
-            }
-
-
-            } else {
-            Log.e("TopStatsActivity", "Access token is missing!")
+        } else {
+            Log.e("FullStatsActivity", "Access token is missing!")
         }
     }
 
-    private fun setupTimeRangeToggle() {
-        val toggleGroup = findViewById<RadioGroup>(R.id.toggleGroup)
-        toggleGroup.setOnCheckedChangeListener { _, checkedId ->
-            timeRange = when (checkedId) {
-                R.id.radio_month -> "short_term"
-                R.id.radio_6months -> "medium_term"
-                R.id.radio_year -> "long_term"
-                else -> "short_term"
-            }
-        }
-    }
-
-    fun getTopTracks(accessToken: String, callback: (List<Track>) -> Unit) {
-        RetrofitClient.instance.getTopTracks("Bearer $accessToken", timeRange)
+    fun getFullTracks(accessToken: String, callback: (List<Track>) -> Unit) {
+        RetrofitClient.instance.getTopTracks("Bearer $accessToken", timeRange, limit = 100)
             .enqueue(object : Callback<TopTracksResponse> {
                 override fun onResponse(call: Call<TopTracksResponse>, response: Response<TopTracksResponse>) {
                     if (response.isSuccessful) {
                         val tracks = response.body()?.items ?: emptyList()
                         callback(tracks)
                     } else {
-                        Log.e("TopStatsActivity", "Failed to fetch top tracks: ${response.errorBody()?.string()}")
+                        Log.e("FullStatsActivity", "Failed to fetch full tracks: ${response.errorBody()?.string()}")
                         callback(emptyList())
                     }
                 }
 
                 override fun onFailure(call: Call<TopTracksResponse>, t: Throwable) {
-                    Log.e("TopStatsActivity", "Error fetching top tracks", t)
+                    Log.e("FullStatsActivity", "Error fetching full tracks", t)
                     callback(emptyList())
                 }
             })
     }
 
-    fun getTopArtists(accessToken: String, callback: (List<Artist>) -> Unit) {
-        RetrofitClient.instance.getTopArtists("Bearer $accessToken", timeRange)
+    fun getFullArtists(accessToken: String, callback: (List<Artist>) -> Unit) {
+        RetrofitClient.instance.getTopArtists("Bearer $accessToken", timeRange, limit = 100)
             .enqueue(object : Callback<TopArtistsResponse> {
                 override fun onResponse(call: Call<TopArtistsResponse>, response: Response<TopArtistsResponse>) {
                     if (response.isSuccessful) {
                         val artists = response.body()?.items ?: emptyList()
                         callback(artists)
                     } else {
-                        Log.e("TopStatsActivity", "Failed to fetch top artists: ${response.errorBody()?.string()}")
+                        Log.e("FullStatsActivity", "Failed to fetch full artists: ${response.errorBody()?.string()}")
                         callback(emptyList())
                     }
                 }
 
                 override fun onFailure(call: Call<TopArtistsResponse>, t: Throwable) {
-                    Log.e("TopStatsActivity", "Error fetching top artists", t)
+                    Log.e("FullStatsActivity", "Error fetching full artists", t)
                     callback(emptyList())
                 }
             })
     }
 
-    fun getTopGenres(accessToken: String, callback: (List<String>) -> Unit) {
-        RetrofitClient.instance.getTopArtists("Bearer $accessToken", timeRange)
+    fun getFullGenres(accessToken: String, callback: (List<String>) -> Unit) {
+        RetrofitClient.instance.getTopArtists("Bearer $accessToken", timeRange, limit = 100)
             .enqueue(object : Callback<TopArtistsResponse> {
                 override fun onResponse(call: Call<TopArtistsResponse>, response: Response<TopArtistsResponse>) {
                     if (response.isSuccessful) {
@@ -104,24 +77,21 @@ class TopStatsActivity : AppCompatActivity() {
                             .eachCount()
                             .toList()
                             .sortedByDescending { (_, count) -> count }
-                            .take(5)
                             .map { it.first.capitalizeWords() }
                         callback(genres)
                     } else {
-                        Log.e("TopStatsActivity", "Failed to fetch genres: ${response.errorBody()?.string()}")
+                        Log.e("FullStatsActivity", "Failed to fetch genres: ${response.errorBody()?.string()}")
                         callback(emptyList())
                     }
                 }
 
                 override fun onFailure(call: Call<TopArtistsResponse>, t: Throwable) {
-                    Log.e("TopStatsActivity", "Error fetching genres", t)
+                    Log.e("FullStatsActivity", "Error fetching genres", t)
                     callback(emptyList())
                 }
             })
     }
 
-
-    // Helper function for capitalization (genres)
     private fun String.capitalizeWords(): String =
         split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercaseChar() } }
 }
