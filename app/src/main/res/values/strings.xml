@@ -9,4 +9,5 @@
     <string name="top_artists">Top Artists</string>
     <string name="full_stats">View Full Stats</string>
     <string name="login">Log Into Spotify</string>
+    <string name="your_full_stats"> Your Full Stats</string>
 </resources>

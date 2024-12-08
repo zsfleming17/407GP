@@ -3,27 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient">>
+
 
     <!-- Title -->
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Your Full Stats"
-        android:textSize="20sp"
+        android:layout_width="408dp"
+        android:layout_height="131dp"
+        android:background="@drawable/top_stats_text_background"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:text="@string/your_full_stats"
+        android:textColor="@color/white"
+        android:textSize="48sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Category Toggle Group (Songs, Artists, Genres) -->
     <RadioGroup
         android:id="@+id/categoryToggleGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="252dp"
+        android:layout_height="40dp"
         android:layout_marginTop="20dp"
+        android:background="#1db954"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -66,6 +73,8 @@
         <!-- Scrollable Content Container -->
         <LinearLayout
             android:id="@+id/contentContainer"
+            android:background="#1db954"
+            android:backgroundTint="#1db954"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -79,9 +88,10 @@
     <!-- Time Range Toggle Group at Bottom -->
     <RadioGroup
         android:id="@+id/timeRangeGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="254dp"
+        android:layout_height="48dp"
         android:layout_marginBottom="20dp"
+        android:background="#1db954"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
