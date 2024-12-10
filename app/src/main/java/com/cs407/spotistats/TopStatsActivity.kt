@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.cs407.spotistats.models.Artist
 import com.cs407.spotistats.models.TopArtistsResponse
@@ -23,12 +25,21 @@ class TopStatsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.top_stats)
 
+        val sharedPreferences = getSharedPreferences("SpotistatsPrefs", MODE_PRIVATE)
+        timeRange = sharedPreferences.getString("TopStatsTimeRange", "short_term") ?: "short_term"
+
         val accessToken = intent.getStringExtra("ACCESS_TOKEN")
         if (accessToken != null) {
             Log.d("TopStatsActivity", "Got access token: ${accessToken.take(20)}...")
 
-            setupTimeRangeToggle()
+            val toggleGroup = findViewById<RadioGroup>(R.id.toggleGroup)
+            when (timeRange) {
+                "short_term" -> toggleGroup.check(R.id.radio_month)
+                "medium_term" -> toggleGroup.check(R.id.radio_6months)
+                "long_term" -> toggleGroup.check(R.id.radio_year)
+            }
 
+            setupTimeRangeToggle()
             fetchAndDisplayStats(accessToken)
 
             val fullStatsButton = findViewById<Button>(R.id.logoutButton)
@@ -38,7 +49,6 @@ class TopStatsActivity : AppCompatActivity() {
                 intent.putExtra("ACCESS_TOKEN", accessToken)
                 startActivity(intent)
             }
-
         } else {
             Log.d("TopStatsActivity", "Access token is missing!")
         }
@@ -46,6 +56,8 @@ class TopStatsActivity : AppCompatActivity() {
 
     private fun setupTimeRangeToggle() {
         val toggleGroup = findViewById<RadioGroup>(R.id.toggleGroup)
+        val sharedPreferences = getSharedPreferences("SpotistatsPrefs", MODE_PRIVATE)
+
         toggleGroup.setOnCheckedChangeListener { _, checkedId ->
             timeRange = when (checkedId) {
                 R.id.radio_month -> "short_term"
@@ -53,7 +65,8 @@ class TopStatsActivity : AppCompatActivity() {
                 R.id.radio_year -> "long_term"
                 else -> "short_term"
             }
-            Log.d("TopStatsActivity", "Time range changed to: $timeRange")
+            sharedPreferences.edit().putString("TopStatsTimeRange", timeRange).apply()
+
             val accessToken = intent.getStringExtra("ACCESS_TOKEN") ?: return@setOnCheckedChangeListener
             fetchAndDisplayStats(accessToken)
         }
@@ -113,6 +126,8 @@ class TopStatsActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TopTracksResponse>, t: Throwable) {
+                    Toast.makeText(this@TopStatsActivity, "Error retrieving data. Check internet connection",
+                        Toast.LENGTH_SHORT).show()
                     callback(emptyList())
                 }
             })
@@ -131,6 +146,8 @@ class TopStatsActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TopArtistsResponse>, t: Throwable) {
+                    Toast.makeText(this@TopStatsActivity, "Error retrieving data. Check internet connection",
+                        Toast.LENGTH_SHORT).show()
                     callback(emptyList())
                 }
             })
@@ -155,6 +172,8 @@ class TopStatsActivity : AppCompatActivity() {
                     }
                 }
                 override fun onFailure(call: Call<TopArtistsResponse>, t: Throwable) {
+                    Toast.makeText(this@TopStatsActivity, "Error retrieving data. Check internet connection",
+                        Toast.LENGTH_SHORT).show()
                     callback(emptyList())
                 }
             })

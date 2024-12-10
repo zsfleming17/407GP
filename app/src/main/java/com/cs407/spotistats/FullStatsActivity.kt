@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setMargins
 import com.cs407.spotistats.models.Artist
@@ -26,11 +26,26 @@ class FullStatsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.full_stats)
 
+        val sharedPreferences = getSharedPreferences("SpotistatsPrefs", MODE_PRIVATE)
+        timeRange = sharedPreferences.getString("FullStatsTimeRange", "short_term") ?: "short_term"
+        currentCategory = sharedPreferences.getString("FullStatsCategory", "songs") ?: "songs"
+
         val accessToken = intent.getStringExtra("ACCESS_TOKEN")
         if (accessToken != null) {
             Log.d("FullStatsActivity", "Got access token: ${accessToken.take(5)}...")
-            findViewById<RadioButton>(R.id.radio_songs).isChecked = true
-            findViewById<RadioButton>(R.id.radio_month).isChecked = true
+            val timeRangeGroup = findViewById<RadioGroup>(R.id.timeRangeGroup)
+            when (timeRange) {
+                "short_term" -> timeRangeGroup.check(R.id.radio_month)
+                "medium_term" -> timeRangeGroup.check(R.id.radio_6months)
+                "long_term" -> timeRangeGroup.check(R.id.radio_year)
+            }
+
+            val categoryToggleGroup = findViewById<RadioGroup>(R.id.categoryToggleGroup)
+            when (currentCategory) {
+                "songs" -> categoryToggleGroup.check(R.id.radio_songs)
+                "artists" -> categoryToggleGroup.check(R.id.radio_artists)
+                "genres" -> categoryToggleGroup.check(R.id.radio_genres)
+            }
 
             setupTimeRangeToggle(accessToken)
             setupCategoryToggle(accessToken)
@@ -40,7 +55,9 @@ class FullStatsActivity : AppCompatActivity() {
         }
     }
 
+
     private fun setupTimeRangeToggle(accessToken: String) {
+        val sharedPreferences = getSharedPreferences("SpotistatsPrefs", MODE_PRIVATE)
         val timeRangeGroup = findViewById<RadioGroup>(R.id.timeRangeGroup)
         timeRangeGroup.setOnCheckedChangeListener { _, checkedId ->
             timeRange = when (checkedId) {
@@ -49,11 +66,13 @@ class FullStatsActivity : AppCompatActivity() {
                 R.id.radio_year -> "long_term"
                 else -> "short_term"
             }
+            sharedPreferences.edit().putString("FullStatsTimeRange", timeRange).apply()
             fetchFullStats(accessToken)
         }
     }
 
     private fun setupCategoryToggle(accessToken: String) {
+        val sharedPreferences = getSharedPreferences("SpotistatsPrefs", MODE_PRIVATE)
         val categoryToggleGroup = findViewById<RadioGroup>(R.id.categoryToggleGroup)
         categoryToggleGroup.setOnCheckedChangeListener { _, checkedId ->
             currentCategory = when (checkedId) {
@@ -62,6 +81,7 @@ class FullStatsActivity : AppCompatActivity() {
                 R.id.radio_genres -> "genres"
                 else -> "songs"
             }
+            sharedPreferences.edit().putString("FullStatsCategory", currentCategory).apply()
             fetchFullStats(accessToken)
         }
     }
@@ -85,64 +105,50 @@ class FullStatsActivity : AppCompatActivity() {
         val contentContainer = findViewById<LinearLayout>(R.id.contentContainer)
 
         contentContainer.removeAllViews()
+        val loadingTextView = TextView(this).apply {
+            text = "Loading..."
+            setTextColor(resources.getColor(R.color.white))
+            textSize = 16f
+        }
+        contentContainer.addView(loadingTextView)
 
         when (currentCategory) {
-            "songs" -> {
-                Log.d("FullStatsActivity", "Fetching songs...")
-                getFullTracks(accessToken) { tracks ->
-                    Log.d("FullStatsActivity", "Received ${tracks.size} tracks")
-                    runOnUiThread {
-                        if (tracks.isEmpty()) {
-                            Log.d("FullStatsActivity", "No tracks received")
-                            val textView = TextView(this)
-                            textView.text = "No tracks found"
-                            textView.setTextColor(resources.getColor(R.color.white))
-                            contentContainer.addView(textView)
-                        } else {
-                            tracks.take(50).forEachIndexed { index, track ->
-                                val artistNames = track.artists.joinToString(", ") { it.name }
-                                val displayText = "${track.name} - $artistNames"
-                                Log.d("FullStatsActivity", "Adding track $index: $displayText")
-                                contentContainer.addView(createStyledTextView(displayText, index))
-                            }
+            "songs" -> getFullTracks(accessToken) { tracks ->
+                runOnUiThread {
+                    contentContainer.removeAllViews()
+                    if (tracks.isEmpty()) {
+                        contentContainer.addView(createStyledTextView("No tracks found", 0))
+                    } else {
+                        tracks.take(50).forEachIndexed { index, track ->
+                            val artistNames = track.artists.joinToString(", ") { it.name }
+                            val displayText = "${track.name} - $artistNames"
+                            contentContainer.addView(createStyledTextView(displayText, index))
                         }
                     }
                 }
             }
 
-            "artists" -> {
-                Log.d("FullStatsActivity", "Fetching artists...")
-                getFullArtists(accessToken) { artists ->
-                    Log.d("FullStatsActivity", "Received ${artists.size} artists")
-                    runOnUiThread {
-                        if (artists.isEmpty()) {
-                            val textView = TextView(this)
-                            textView.text = "No artists found"
-                            textView.setTextColor(resources.getColor(R.color.white))
-                            contentContainer.addView(textView)
-                        } else {
-                            artists.take(50).forEachIndexed { index, artist ->
-                                contentContainer.addView(createStyledTextView(artist.name, index))
-                            }
+            "artists" -> getFullArtists(accessToken) { artists ->
+                runOnUiThread {
+                    contentContainer.removeAllViews()
+                    if (artists.isEmpty()) {
+                        contentContainer.addView(createStyledTextView("No artists found", 0))
+                    } else {
+                        artists.take(50).forEachIndexed { index, artist ->
+                            contentContainer.addView(createStyledTextView(artist.name, index))
                         }
                     }
                 }
             }
 
-            "genres" -> {
-                Log.d("FullStatsActivity", "Fetching genres...")
-                getFullGenres(accessToken) { genres ->
-                    Log.d("FullStatsActivity", "Received ${genres.size} genres")
-                    runOnUiThread {
-                        if (genres.isEmpty()) {
-                            val textView = TextView(this)
-                            textView.text = "No genres found"
-                            textView.setTextColor(resources.getColor(R.color.white))
-                            contentContainer.addView(textView)
-                        } else {
-                            genres.take(25).forEachIndexed { index, genre ->
-                                contentContainer.addView(createStyledTextView(genre, index))
-                            }
+            "genres" -> getFullGenres(accessToken) { genres ->
+                runOnUiThread {
+                    contentContainer.removeAllViews()
+                    if (genres.isEmpty()) {
+                        contentContainer.addView(createStyledTextView("No genres found", 0))
+                    } else {
+                        genres.take(25).forEachIndexed { index, genre ->
+                            contentContainer.addView(createStyledTextView(genre, index))
                         }
                     }
                 }
@@ -167,6 +173,8 @@ class FullStatsActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TopTracksResponse>, t: Throwable) {
+                    Toast.makeText(this@FullStatsActivity, "Error retrieving data. Check internet connection",
+                        Toast.LENGTH_SHORT).show()
                     callback(emptyList())
                 }
             })
@@ -189,6 +197,8 @@ class FullStatsActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TopArtistsResponse>, t: Throwable) {
+                    Toast.makeText(this@FullStatsActivity, "Error retrieving data. Check internet connection",
+                        Toast.LENGTH_SHORT).show()
                     callback(emptyList())
                 }
             })
@@ -223,6 +233,8 @@ class FullStatsActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TopArtistsResponse>, t: Throwable) {
+                    Toast.makeText(this@FullStatsActivity, "Error retrieving data. Check internet connection",
+                        Toast.LENGTH_SHORT).show()
                     callback(emptyList())
                 }
             })
