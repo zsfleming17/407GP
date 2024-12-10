@@ -7,10 +7,6 @@
     android:background="@drawable/gradient">
 
 
-    <!-- Add a TextView with the text "Your Top Stats" -->
-
-    <!-- Add a RadioGroup with the three viewing options -->
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="408dp"
@@ -67,9 +63,7 @@
             android:textStyle="bold" />
     </RadioGroup>
 
-    <!-- Top Songs Label -->
 
-    <!-- Songs Box -->
     <TextView
         android:id="@+id/topSongsLabel"
         android:layout_width="wrap_content"
@@ -94,7 +88,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topSongsLabel">
 
-        <!-- Dynamic Content Container -->
         <LinearLayout
             android:id="@+id/songsContainer"
             android:layout_width="match_parent"
@@ -105,7 +98,6 @@
             android:padding="16dp" />
     </androidx.cardview.widget.CardView>
 
-    <!-- Top Genres Label -->
     <TextView
         android:id="@+id/topGenresLabel"
         android:layout_width="wrap_content"
@@ -119,7 +111,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/songsCard" />
 
-    <!-- Genres Box -->
     <androidx.cardview.widget.CardView
         android:id="@+id/genresCard"
         android:layout_width="0dp"
@@ -131,7 +122,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topGenresLabel">
 
-        <!-- Dynamic Content Container -->
         <LinearLayout
             android:id="@+id/genresContainer"
             android:layout_width="match_parent"
@@ -141,7 +131,6 @@
             android:padding="16dp" />
     </androidx.cardview.widget.CardView>
 
-    <!-- Top Artists Label -->
     <TextView
         android:id="@+id/topArtistsLabel"
         android:layout_width="wrap_content"
@@ -155,7 +144,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/genresCard" />
 
-    <!-- Artists Box -->
     <androidx.cardview.widget.CardView
         android:id="@+id/artistsCard"
         android:layout_width="0dp"
@@ -167,7 +155,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topArtistsLabel">
 
-        <!-- Dynamic Content Container -->
         <LinearLayout
             android:id="@+id/artistsContainer"
             android:layout_width="match_parent"

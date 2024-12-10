@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity() {
         )
             .setScopes(arrayOf("streaming", "user-library-read", "user-top-read"))
         val request = builder.build()
-
         AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request)
     }
 
@@ -50,12 +49,12 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     } else {
-                        Log.e("MainActivity", "Access token is null or empty!")
+                        Log.d("MainActivity", "Access token is null or empty!")
                     }
                 }
                 AuthorizationResponse.Type.ERROR -> {
                     val error = response.error
-                    Log.e("MainActivity", "Error during Spotify Authentication: $error")
+                    Log.d("MainActivity", "Error during Spotify Authentication: $error")
                 }
 
                 AuthorizationResponse.Type.EMPTY -> {
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 else -> {
-                    Log.w("MainActivity", "Unexpected response type: ${response.type}")
+                    Log.d("MainActivity", "Unexpected response type: ${response.type}")
                 }
             }
         } else {

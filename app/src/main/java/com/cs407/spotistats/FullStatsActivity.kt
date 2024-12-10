@@ -36,7 +36,7 @@ class FullStatsActivity : AppCompatActivity() {
             setupCategoryToggle(accessToken)
             fetchFullStats(accessToken)
         } else {
-            Log.e("FullStatsActivity", "No access token!")
+            Log.e("FullStatsActivity", "No valid access token")
         }
     }
 
@@ -83,8 +83,6 @@ class FullStatsActivity : AppCompatActivity() {
 
     private fun fetchFullStats(accessToken: String) {
         val contentContainer = findViewById<LinearLayout>(R.id.contentContainer)
-        Log.d("FullStatsActivity", "Starting fetchFullStats with category: $currentCategory")
-        Log.d("FullStatsActivity", "ContentContainer found: ${contentContainer != null}")
 
         contentContainer.removeAllViews()
 
@@ -153,9 +151,6 @@ class FullStatsActivity : AppCompatActivity() {
     }
 
     private fun getFullTracks(accessToken: String, callback: (List<Track>) -> Unit) {
-        Log.d("FullStatsActivity", "Making API call for tracks with timeRange: $timeRange")
-        Log.d("FullStatsActivity", "Access token first 20 chars: ${accessToken.take(20)}...")
-
         RetrofitClient.instance.getTopTracks("Bearer $accessToken", timeRange, limit = 50)
             .enqueue(object : Callback<TopTracksResponse> {
                 override fun onResponse(
@@ -167,25 +162,17 @@ class FullStatsActivity : AppCompatActivity() {
                         Log.d("FullStatsActivity", "Tracks received: ${tracks.size}")
                         callback(tracks)
                     } else {
-                        val errorCode = response.code()
-                        val errorBody = response.errorBody()?.string()
-                        Log.e("FullStatsActivity", "API error code: $errorCode")
-                        Log.e("FullStatsActivity", "API error body: $errorBody")
-                        Log.e("FullStatsActivity", "API raw response: ${response.raw()}")
                         callback(emptyList())
                     }
                 }
 
                 override fun onFailure(call: Call<TopTracksResponse>, t: Throwable) {
-                    Log.e("FullStatsActivity", "API call failed", t)
-
                     callback(emptyList())
                 }
             })
     }
 
     private fun getFullArtists(accessToken: String, callback: (List<Artist>) -> Unit) {
-        Log.d("FullStatsActivity", "Making API call for artists with timeRange: $timeRange")
         RetrofitClient.instance.getTopArtists("Bearer $accessToken", timeRange, limit = 50)
             .enqueue(object : Callback<TopArtistsResponse> {
                 override fun onResponse(
@@ -197,24 +184,17 @@ class FullStatsActivity : AppCompatActivity() {
                         Log.d("FullStatsActivity", "Artists received: ${artists.size}")
                         callback(artists)
                     } else {
-                        val errorCode = response.code()
-                        val errorBody = response.errorBody()?.string()
-                        Log.e("FullStatsActivity", "API error code: $errorCode")
-                        Log.e("FullStatsActivity", "API error body: $errorBody")
-                        Log.e("FullStatsActivity", "API raw response: ${response.raw()}")
                         callback(emptyList())
                     }
                 }
 
                 override fun onFailure(call: Call<TopArtistsResponse>, t: Throwable) {
-                    Log.e("FullStatsActivity", "API call failed", t)
                     callback(emptyList())
                 }
             })
     }
 
     private fun getFullGenres(accessToken: String, callback: (List<String>) -> Unit) {
-        Log.d("FullStatsActivity", "Making API call for genres with timeRange: $timeRange")
         RetrofitClient.instance.getTopArtists("Bearer $accessToken", timeRange, limit = 25)
             .enqueue(object : Callback<TopArtistsResponse> {
                 override fun onResponse(
@@ -238,16 +218,11 @@ class FullStatsActivity : AppCompatActivity() {
                             }
                         callback(genres)
                     } else {
-                        Log.e(
-                            "FullStatsActivity",
-                            "Failed to fetch genres: ${response.errorBody()?.string()}"
-                        )
                         callback(emptyList())
                     }
                 }
 
                 override fun onFailure(call: Call<TopArtistsResponse>, t: Throwable) {
-                    Log.e("FullStatsActivity", "Error fetching genres", t)
                     callback(emptyList())
                 }
             })

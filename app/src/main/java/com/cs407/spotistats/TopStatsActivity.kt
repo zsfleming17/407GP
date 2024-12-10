@@ -40,7 +40,7 @@ class TopStatsActivity : AppCompatActivity() {
             }
 
         } else {
-            Log.e("TopStatsActivity", "Access token is missing!")
+            Log.d("TopStatsActivity", "Access token is missing!")
         }
     }
 
@@ -73,10 +73,9 @@ class TopStatsActivity : AppCompatActivity() {
             }
         }
 
-        // Update top artists
         getTopArtists(accessToken) { artists ->
             val artistsContainer = findViewById<LinearLayout>(R.id.artistsContainer)
-            artistsContainer.removeAllViews() // clear any previous entries
+            artistsContainer.removeAllViews()
 
             artists.take(5).forEach { artist ->
                 val textView = TextView(this)
@@ -87,10 +86,9 @@ class TopStatsActivity : AppCompatActivity() {
             }
         }
 
-        // Update top genres
         getTopGenres(accessToken) { genres ->
             val genresContainer = findViewById<LinearLayout>(R.id.genresContainer)
-            genresContainer.removeAllViews() // Clear any previous entries
+            genresContainer.removeAllViews()
 
             genres.take(5).forEach { genre ->
                 val textView = TextView(this)
@@ -102,50 +100,44 @@ class TopStatsActivity : AppCompatActivity() {
         }
     }
 
-
-
     fun getTopTracks(accessToken: String, callback: (List<Track>) -> Unit) {
-        RetrofitClient.instance.getTopTracks("Bearer $accessToken", timeRange, limit = 5)  // Added limit=5
+        RetrofitClient.instance.getTopTracks("Bearer $accessToken", timeRange, limit = 5)
             .enqueue(object : Callback<TopTracksResponse> {
                 override fun onResponse(call: Call<TopTracksResponse>, response: Response<TopTracksResponse>) {
                     if (response.isSuccessful) {
                         val tracks = response.body()?.items ?: emptyList()
                         callback(tracks)
                     } else {
-                        Log.e("TopStatsActivity", "Failed to fetch top tracks: ${response.errorBody()?.string()}")
                         callback(emptyList())
                     }
                 }
 
                 override fun onFailure(call: Call<TopTracksResponse>, t: Throwable) {
-                    Log.e("TopStatsActivity", "Error fetching top tracks", t)
                     callback(emptyList())
                 }
             })
     }
 
     fun getTopArtists(accessToken: String, callback: (List<Artist>) -> Unit) {
-        RetrofitClient.instance.getTopArtists("Bearer $accessToken", timeRange, limit = 5)  // Added limit=5
+        RetrofitClient.instance.getTopArtists("Bearer $accessToken", timeRange, limit = 5)
             .enqueue(object : Callback<TopArtistsResponse> {
                 override fun onResponse(call: Call<TopArtistsResponse>, response: Response<TopArtistsResponse>) {
                     if (response.isSuccessful) {
                         val artists = response.body()?.items ?: emptyList()
                         callback(artists)
                     } else {
-                        Log.e("TopStatsActivity", "Failed to fetch top artists: ${response.errorBody()?.string()}")
                         callback(emptyList())
                     }
                 }
 
                 override fun onFailure(call: Call<TopArtistsResponse>, t: Throwable) {
-                    Log.e("TopStatsActivity", "Error fetching top artists", t)
                     callback(emptyList())
                 }
             })
     }
 
     fun getTopGenres(accessToken: String, callback: (List<String>) -> Unit) {
-        RetrofitClient.instance.getTopArtists("Bearer $accessToken", timeRange, limit = 5)  // Added limit=5
+        RetrofitClient.instance.getTopArtists("Bearer $accessToken", timeRange, limit = 5)
             .enqueue(object : Callback<TopArtistsResponse> {
                 override fun onResponse(call: Call<TopArtistsResponse>, response: Response<TopArtistsResponse>) {
                     if (response.isSuccessful) {
@@ -159,13 +151,10 @@ class TopStatsActivity : AppCompatActivity() {
                             .map { it.first.capitalizeWords() }
                         callback(genres)
                     } else {
-                        Log.e("TopStatsActivity", "Failed to fetch genres: ${response.errorBody()?.string()}")
                         callback(emptyList())
                     }
                 }
-
                 override fun onFailure(call: Call<TopArtistsResponse>, t: Throwable) {
-                    Log.e("TopStatsActivity", "Error fetching genres", t)
                     callback(emptyList())
                 }
             })
