@@ -70,20 +70,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/categoryToggleGroup">
 
-        <!-- Scrollable Content Container -->
-        <LinearLayout
-            android:id="@+id/contentContainer"
-            android:background="#1db954"
-            android:backgroundTint="#1db954"
+        <!-- Add ScrollView here -->
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_height="match_parent">
 
-            <!-- Add your list items here programmatically -->
+            <LinearLayout
+                android:id="@+id/contentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#1db954"
+                android:backgroundTint="#1db954"
+                android:orientation="vertical"
+                android:padding="16dp">
+            </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
+
     </androidx.cardview.widget.CardView>
+
 
     <!-- Time Range Toggle Group at Bottom -->
     <RadioGroup

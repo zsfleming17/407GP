@@ -12,13 +12,13 @@ interface SpotifyService {
     fun getTopTracks(
         @Header("Authorization") token: String,
         @Query("time_range") timeRange: String = "short_term",
-        @Query("limit") limit: Int = 5
+        @Query("limit") limit: Int
     ): Call<TopTracksResponse>
 
     @GET("v1/me/top/artists")
     fun getTopArtists(
         @Header("Authorization") token: String,
         @Query("time_range") timeRange: String = "short_term",
-        @Query("limit") limit: Int = 5
+        @Query("limit") limit: Int
     ): Call<TopArtistsResponse>
 }
