@@ -3,8 +3,11 @@ package com.cs407.spotistats
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -58,6 +61,20 @@ class TopStatsActivity : AppCompatActivity() {
         val toggleGroup = findViewById<RadioGroup>(R.id.toggleGroup)
         val sharedPreferences = getSharedPreferences("SpotistatsPrefs", MODE_PRIVATE)
 
+        fun updateTabStyles() {
+            for (i in 0 until toggleGroup.childCount) {
+                val radioButton = toggleGroup.getChildAt(i) as RadioButton
+                if (radioButton.isChecked) {
+                    radioButton.setBackgroundResource(R.drawable.radio_button_selected)
+                    radioButton.setTextColor(resources.getColor(R.color.white))
+                } else {
+                    radioButton.setBackgroundResource(R.drawable.radio_button_unselected)
+                    radioButton.setTextColor(resources.getColor(R.color.black))
+                }
+            }
+        }
+
+
         toggleGroup.setOnCheckedChangeListener { _, checkedId ->
             timeRange = when (checkedId) {
                 R.id.radio_month -> "short_term"
@@ -66,49 +83,62 @@ class TopStatsActivity : AppCompatActivity() {
                 else -> "short_term"
             }
             sharedPreferences.edit().putString("TopStatsTimeRange", timeRange).apply()
+            updateTabStyles()
 
             val accessToken = intent.getStringExtra("ACCESS_TOKEN") ?: return@setOnCheckedChangeListener
             fetchAndDisplayStats(accessToken)
         }
+        updateTabStyles()
     }
 
     private fun fetchAndDisplayStats(accessToken: String) {
-        getTopTracks(accessToken) { tracks ->
-            val songsContainer = findViewById<LinearLayout>(R.id.songsContainer)
-            songsContainer.removeAllViews()
+        val loadingOverlay = findViewById<FrameLayout>(R.id.loadingOverlay)
+        val songsContainer = findViewById<LinearLayout>(R.id.songsContainer)
+        val artistsContainer = findViewById<LinearLayout>(R.id.artistsContainer)
+        val genresContainer = findViewById<LinearLayout>(R.id.genresContainer)
 
-            tracks.take(5).forEach { track ->
-                val textView = TextView(this)
-                textView.text = track.name
-                textView.setTextColor(resources.getColor(R.color.white))
-                textView.textSize = 14f
-                songsContainer.addView(textView)
+        loadingOverlay.visibility = View.VISIBLE
+        loadingOverlay.bringToFront()
+
+        getTopTracks(accessToken) { tracks ->
+            runOnUiThread {
+                loadingOverlay.visibility = View.GONE
+                songsContainer.removeAllViews()
+                tracks.take(5).forEach { track ->
+                    val textView = TextView(this)
+                    textView.text = track.name
+                    textView.setTextColor(resources.getColor(R.color.white))
+                    textView.textSize = 14f
+                    songsContainer.addView(textView)
+                }
             }
         }
 
         getTopArtists(accessToken) { artists ->
-            val artistsContainer = findViewById<LinearLayout>(R.id.artistsContainer)
-            artistsContainer.removeAllViews()
-
-            artists.take(5).forEach { artist ->
-                val textView = TextView(this)
-                textView.text = artist.name
-                textView.setTextColor(resources.getColor(R.color.white))
-                textView.textSize = 14f
-                artistsContainer.addView(textView)
+            runOnUiThread {
+                loadingOverlay.visibility = View.GONE
+                artistsContainer.removeAllViews()
+                artists.take(5).forEach { artist ->
+                    val textView = TextView(this)
+                    textView.text = artist.name
+                    textView.setTextColor(resources.getColor(R.color.white))
+                    textView.textSize = 14f
+                    artistsContainer.addView(textView)
+                }
             }
         }
 
         getTopGenres(accessToken) { genres ->
-            val genresContainer = findViewById<LinearLayout>(R.id.genresContainer)
-            genresContainer.removeAllViews()
-
-            genres.take(5).forEach { genre ->
-                val textView = TextView(this)
-                textView.text = genre
-                textView.setTextColor(resources.getColor(R.color.white))
-                textView.textSize = 14f
-                genresContainer.addView(textView)
+            runOnUiThread {
+                loadingOverlay.visibility = View.GONE
+                genresContainer.removeAllViews()
+                genres.take(5).forEach { genre ->
+                    val textView = TextView(this)
+                    textView.text = genre
+                    textView.setTextColor(resources.getColor(R.color.white))
+                    textView.textSize = 14f
+                    genresContainer.addView(textView)
+                }
             }
         }
     }

@@ -2,8 +2,11 @@ package com.cs407.spotistats
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
@@ -59,6 +62,20 @@ class FullStatsActivity : AppCompatActivity() {
     private fun setupTimeRangeToggle(accessToken: String) {
         val sharedPreferences = getSharedPreferences("SpotistatsPrefs", MODE_PRIVATE)
         val timeRangeGroup = findViewById<RadioGroup>(R.id.timeRangeGroup)
+
+        fun updateTabStyles() {
+            for (i in 0 until timeRangeGroup.childCount) {
+                val radioButton = timeRangeGroup.getChildAt(i) as RadioButton
+                if (radioButton.isChecked) {
+                    radioButton.setBackgroundResource(R.drawable.radio_button_selected)
+                    radioButton.setTextColor(resources.getColor(R.color.white))
+                } else {
+                    radioButton.setBackgroundResource(R.drawable.radio_button_unselected)
+                    radioButton.setTextColor(resources.getColor(R.color.black))
+                }
+            }
+        }
+
         timeRangeGroup.setOnCheckedChangeListener { _, checkedId ->
             timeRange = when (checkedId) {
                 R.id.radio_month -> "short_term"
@@ -68,12 +85,28 @@ class FullStatsActivity : AppCompatActivity() {
             }
             sharedPreferences.edit().putString("FullStatsTimeRange", timeRange).apply()
             fetchFullStats(accessToken)
+            updateTabStyles()
         }
+        updateTabStyles()
     }
 
     private fun setupCategoryToggle(accessToken: String) {
         val sharedPreferences = getSharedPreferences("SpotistatsPrefs", MODE_PRIVATE)
         val categoryToggleGroup = findViewById<RadioGroup>(R.id.categoryToggleGroup)
+
+        fun updateTabStyles() {
+            for (i in 0 until categoryToggleGroup.childCount) {
+                val radioButton = categoryToggleGroup.getChildAt(i) as RadioButton
+                if (radioButton.isChecked) {
+                    radioButton.setBackgroundResource(R.drawable.radio_button_selected)
+                    radioButton.setTextColor(resources.getColor(R.color.white))
+                } else {
+                    radioButton.setBackgroundResource(R.drawable.radio_button_unselected)
+                    radioButton.setTextColor(resources.getColor(R.color.black))
+                }
+            }
+        }
+
         categoryToggleGroup.setOnCheckedChangeListener { _, checkedId ->
             currentCategory = when (checkedId) {
                 R.id.radio_songs -> "songs"
@@ -83,7 +116,9 @@ class FullStatsActivity : AppCompatActivity() {
             }
             sharedPreferences.edit().putString("FullStatsCategory", currentCategory).apply()
             fetchFullStats(accessToken)
+            updateTabStyles()
         }
+        updateTabStyles()
     }
 
     private fun createStyledTextView(text: String, index: Int): TextView {
@@ -103,18 +138,16 @@ class FullStatsActivity : AppCompatActivity() {
 
     private fun fetchFullStats(accessToken: String) {
         val contentContainer = findViewById<LinearLayout>(R.id.contentContainer)
+        val loadingOverlay = findViewById<FrameLayout>(R.id.loadingOverlay)
 
-        contentContainer.removeAllViews()
-        val loadingTextView = TextView(this).apply {
-            text = "Loading..."
-            setTextColor(resources.getColor(R.color.white))
-            textSize = 16f
-        }
-        contentContainer.addView(loadingTextView)
+        loadingOverlay.visibility = View.VISIBLE
+        loadingOverlay.bringToFront()
 
         when (currentCategory) {
             "songs" -> getFullTracks(accessToken) { tracks ->
                 runOnUiThread {
+                    loadingOverlay.visibility = View.GONE
+                    contentContainer.visibility = View.VISIBLE
                     contentContainer.removeAllViews()
                     if (tracks.isEmpty()) {
                         contentContainer.addView(createStyledTextView("No tracks found", 0))
@@ -130,6 +163,8 @@ class FullStatsActivity : AppCompatActivity() {
 
             "artists" -> getFullArtists(accessToken) { artists ->
                 runOnUiThread {
+                    loadingOverlay.visibility = View.GONE
+                    contentContainer.visibility = View.VISIBLE
                     contentContainer.removeAllViews()
                     if (artists.isEmpty()) {
                         contentContainer.addView(createStyledTextView("No artists found", 0))
@@ -143,6 +178,8 @@ class FullStatsActivity : AppCompatActivity() {
 
             "genres" -> getFullGenres(accessToken) { genres ->
                 runOnUiThread {
+                    loadingOverlay.visibility = View.GONE
+                    contentContainer.visibility = View.VISIBLE
                     contentContainer.removeAllViews()
                     if (genres.isEmpty()) {
                         contentContainer.addView(createStyledTextView("No genres found", 0))
